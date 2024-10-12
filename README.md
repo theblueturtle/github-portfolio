@@ -1,4 +1,4 @@
-Below are links to sample projects for you to explore. You can also download using the links below.
+Thanks for checking out my portfolio! Explore my sample projects through the links below. If you're interested in diving deeper, full project files are available for download via the links in the banner above, giving you an opportunity to examine my code implementations in more detail. If you'd like to contact me, send me a message using the contact form on my [LINKTREE](https://linktr.ee/LeonardoCarrion)
 
 <br>
 
