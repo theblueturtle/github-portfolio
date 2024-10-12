@@ -11,7 +11,7 @@ In this example, I've built a custom editor tool to save player and enemy stats 
 </a>
 
 
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## BREAKDOWN - Stats2JSON.cs
 Here I create a class that will act as the wrapper or container for the data I want to serialize. It is marked as [System.Serializable] so that it can be saved with the Unity’s built-in serializer. This is a requirement for using the JsonUtility.FromJson<T>(string) function because it does not support serializing things like lists directly.
@@ -92,7 +92,7 @@ EditorUtility.SetDirty(playerStatsSO);
 EditorUtility.SetDirty(enemyStatsSO);
 ```
 
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## BREAKDOWN - PlayerStats.cs
 This is the InjectStatData() called by the editor utility. It also uses reflection to check the incoming stat properties against its own properties to find matches with type.GetProperty(nameOfPropertyInThisClass,...). Once the matching property is found, the value is assigned. I also check the property's type to correctly sort the integer stat values from floats with the if/ else condition.
