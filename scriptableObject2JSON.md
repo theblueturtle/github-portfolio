@@ -14,7 +14,7 @@ In this example, I've built a custom editor tool to save player and enemy stats 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## BREAKDOWN - Stats2JSON.cs
-Here I created a class that acts as the wrapper or container for the data I want to serialize. It is marked as **[System.Serializable]** so that it can be saved with Unity’s built-in serializer. This is a requirement for using the JsonUtility.FromJson<T>(string) function because it does not support serializing things like lists directly.
+Here I created a class that acts as the wrapper or container for the data I want to serialize. It is marked as **[System.Serializable]** so that it can be saved with Unity’s built-in serializer. This is a requirement for using the **JsonUtility.FromJson<T>(string)** function because it does not support serializing things like lists directly.
 
 ```c#
 [System.Serializable]
