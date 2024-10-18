@@ -14,7 +14,7 @@ In this example, I've built a custom editor tool to save player and enemy stats 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## BREAKDOWN - Stats2JSON.cs
-Here I create a class that will act as the wrapper or container for the data I want to serialize. It is marked as [System.Serializable] so that it can be saved with the Unity’s built-in serializer. This is a requirement for using the JsonUtility.FromJson<T>(string) function because it does not support serializing things like lists directly.
+Here I created a class that acts as the wrapper or container for the data I want to serialize. It is marked as **[System.Serializable]** so that it can be saved with Unity’s built-in serializer. This is a requirement for using the JsonUtility.FromJson<T>(string) function because it does not support serializing things like lists directly.
 
 ```c#
 [System.Serializable]
@@ -27,7 +27,7 @@ private class MySerializationWrapper
 <br>
 <br>
 
-This is how you create a ScriptableObject asset reference field from a custom type (PlayerStats) in an editor GUI. This creates the drag and drop fields in the utility’s UI. SerializedObject is how you can work with ScriptableObjects in the editor.
+This is how you create a ScriptableObject asset reference field from a custom type **(PlayerStats)** in an editor GUI. This creates the drag and drop fields in the utility’s UI. **SerializedObject** is how you can work with ScriptableObjects in the editor.
 ```c#
 /*This code block is various snippets from the Stats2JSON.cs class*/
 //...
@@ -56,7 +56,7 @@ serializedObject.ApplyModifiedProperties();
 <br>
 <br>
 
-Here I take the ScriptableObject data and put it inside the serializable wrapper class container with JsonUtility.ToJson(). Then I use File.WriteAllText() to write the data to the disk. 
+Here I take the ScriptableObject data and put it inside the serializable wrapper class container with **JsonUtility.ToJson()**. Then I use **File.WriteAllText()** to write the data to the disk. 
 ```c#	
 string json = JsonUtility.ToJson(new MySerializationWrapper { MasterStatDataList = StatsSODataStructList }, true);
 File.WriteAllText(pathToSaveFile, json);
@@ -65,7 +65,7 @@ File.WriteAllText(pathToSaveFile, json);
 <br>
 <br>
 
-I use reflection here to check the stat properties in each dictionary to see which subclass (generalProperties or combatProperties) the stat belongs to with (typeGeneralProperties.GetProperty(entry.Key) != null). Then I call the internal function in the subclasses called “InjectStatData…()” and inject the stat data back into the ScriptableObject for assignment.
+I use reflection here to check the stat properties in each dictionary to see which subclass **(generalProperties or combatProperties)** the stat belongs to with **(typeGeneralProperties.GetProperty(entry.Key) != null)**. Then I call the internal function in the subclasses called **“InjectStatData…()”** and inject the stat data back into the ScriptableObject for assignment.
 ```c#
 Type typeGeneralProperties = playerStatsSO.generalProperties.GetType();
 Type typeCombatProperties = playerStatsSO.combatProperties.GetType();
@@ -86,7 +86,7 @@ foreach (KeyValuePair<string, int> entry in dictionaryInt)
 <br>
 <br>
 
-SetDirty() tells the Unity editor that these assets have been modified so that the changes will be saved the next time the active scene is saved. Failing to do this could result in the data being lost when loading a new scene or restarting the editor for example.
+**SetDirty()** tells the Unity editor that these assets have been modified so that the changes will be saved the next time the active scene is saved. Failing to do this could result in the data being lost when loading a new scene or restarting the editor for example.
 ```c#
 EditorUtility.SetDirty(playerStatsSO);
 EditorUtility.SetDirty(enemyStatsSO);
@@ -95,7 +95,7 @@ EditorUtility.SetDirty(enemyStatsSO);
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## BREAKDOWN - PlayerStats.cs
-This is the InjectStatData() called by the editor utility. It also uses reflection to check the incoming stat properties against its own properties to find matches with type.GetProperty(nameOfPropertyInThisClass,...). Once the matching property is found, the value is assigned. I also check the property's type to correctly sort the integer stat values from floats with the if/ else condition.
+This is the **InjectStatData()** called by the editor utility. It also uses reflection to check the incoming stat properties against its own properties to find matches with **type.GetProperty(nameOfPropertyInThisClass,...)**. Once the matching property is found, the value is assigned. I also check the property's type to correctly sort the integer stat values from the floats with the if/ else condition.
 ```c#
 public void InjectStatData(string nameOfPropertyInThisClass, int valueInt, float valueFloat)
 {
