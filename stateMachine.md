@@ -7,7 +7,7 @@ This project showcases how to use ScriptableObjects and JSON to handle data seri
 In this example, I've built a custom editor tool to save player and enemy stats to external JSON files. This setup could be easily adapted for other usecases, like saving quest objectives or item information. A key advantage of this approach is that it allows modifying game data outside of Unity. This opens the door for other possibilities like sharing unique configurations with collaborates or adding modding support to a project.
 
 <a href="https://theblueturtle.github.io/github-portfolio/ScriptableObject2JSON.gif" target="_blank">
-  <img src="./ScriptableObject2JSON.gif" alt="My Project" style="width: 100%;">
+  <img src="./StateMachine.gif" alt="My Project" style="width: 100%;">
 </a>
 
 
