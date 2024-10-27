@@ -11,17 +11,11 @@ Thanks for checking out my portfolio! Explore my sample projects through the lin
 <br>
 <br>
 
-|Web Scraper Demo|
-|:-------------:|
-|&nbsp;&nbsp;&nbsp;[CLICK HERE](./webScraper.md)&nbsp;&nbsp;&nbsp;|
-
-<img src="./ScriptableObject2JSON.gif" alt="winForms web scraper - Leonardo Carrion @theblueturtle" style="width: 70%;">
-
-<br>
-<br>
-
 |State Machine Demo|
 |:-------------:|
 |&nbsp;&nbsp;&nbsp;[CLICK HERE](./stateMachine.md)&nbsp;&nbsp;&nbsp;|
 
-<img src="./ScriptableObject2JSON.gif" alt="Custom Player State Machine: Unity - Leonardo Carrion @theblueturtle" style="width: 70%;">
+<img src="./StateMachine.gif" alt="Custom Player State Machine: Unity - Leonardo Carrion @theblueturtle" style="width: 70%;">
+
+<br>
+<br>
