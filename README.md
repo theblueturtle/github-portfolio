@@ -6,7 +6,7 @@ Thanks for checking out my portfolio! Explore my sample projects through the lin
 |:-------------:|
 |&nbsp;&nbsp;&nbsp;[CLICK HERE](./scriptableObject2JSON.md)&nbsp;&nbsp;&nbsp;|
 
-<img src="./ScriptableObject2JSON.gif" alt="ScriptableObject to JSON: Custom Data Serialization Tool for Unity - Leonardo Carrion @theblueturtle" style="width: 60%;">
+<img src="./ScriptableObject2JSON.gif" alt="ScriptableObject to JSON: Custom Data Serialization Tool for Unity - Leonardo Carrion @theblueturtle" style="width: 80%;">
 
 <br>
 <br>
@@ -15,7 +15,7 @@ Thanks for checking out my portfolio! Explore my sample projects through the lin
 |:-------------:|
 |&nbsp;&nbsp;&nbsp;[CLICK HERE](./webScraper.md)&nbsp;&nbsp;&nbsp;|
 
-<img src="./ScriptableObject2JSON.gif" alt="winForms web scraper - Leonardo Carrion @theblueturtle" style="width: 60%;">
+<img src="./ScriptableObject2JSON.gif" alt="winForms web scraper - Leonardo Carrion @theblueturtle" style="width: 80%;">
 
 <br>
 <br>
@@ -24,4 +24,4 @@ Thanks for checking out my portfolio! Explore my sample projects through the lin
 |:-------------:|
 |&nbsp;&nbsp;&nbsp;[CLICK HERE](./stateMachine.md)&nbsp;&nbsp;&nbsp;|
 
-<img src="./ScriptableObject2JSON.gif" alt="Custom Player State Machine: Unity - Leonardo Carrion @theblueturtle" style="width: 60%;">
+<img src="./ScriptableObject2JSON.gif" alt="Custom Player State Machine: Unity - Leonardo Carrion @theblueturtle" style="width: 6=80%;">
