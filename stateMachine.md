@@ -1,126 +1,192 @@
 [>> BACK TO HOME PAGE <<](./README.md)
 
-# State Machine: Dynamic Player Behavior System
+# State Machine: Dynamic Game Object Behavior System
 
-This project showcases how to use ScriptableObjects and JSON to handle data serialization in Unity, a common challenge for developers. I'm a huge fan of Unity's Editor API and the power it offers for creating custom tools that enhance workflow and boost productivity. ScriptableObjects are another favorite Unity feature of mine. They make it really easy to organize and decouple "design" data from core game logic.
+State Machines, or Finite State Machines (FSMs) as they are sometimes referred to, are a key tool in game development, enabling game objects to dynamically change their behaviors in response to different conditions. FSMs are particularly useful for driving player characters, but they can also be applied to control inanimate objects, allowing for complex and customizable gameplay design.
 
-In this example, I've built a custom editor tool to save player and enemy stats to external JSON files. This setup could be easily adapted for other usecases, like saving quest objectives or item information. A key advantage of this approach is that it allows modifying game data outside of Unity. This opens the door for other possibilities like sharing unique configurations with collaborates or adding modding support to a project.
+One of the best features of state machines is their modular architecture. Each set of behaviors, or 'state,' is self-contained and independent, making modifications and extension pretty straightforward. Another strength is that shared functionality can be encapsulated in parent classes, allowing child classes to inherit that shared functionality. This reduces copy-paste redundancy and improves overall scalability.
 
-<a href="https://theblueturtle.github.io/github-portfolio/ScriptableObject2JSON.gif" target="_blank">
-  <img src="./StateMachine.gif" alt="My Project" style="width: 100%;">
+<a href="https://theblueturtle.github.io/github-portfolio/StateMachine.gif" target="_blank">
+  <img src="./StateMachine.gif" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
 </a>
 
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## BREAKDOWN - Stats2JSON.cs
-Here I created a class that acts as the wrapper or container for the data I want to serialize. It is marked as **[System.Serializable]** so that it can be saved with Unity’s built-in serializer. This is a requirement for using the **JsonUtility.FromJson<T>(string)** function because it does not support serializing things like lists directly.
+## BREAKDOWN - PlayerInputReader.cs
+This class serves as the communication bridge between Unity’s input system and the custom code that makes up the state machine, translating user input into action. The main mechanism for this communication is events. This class implements the PlayerControls.IPlayerActions interface, which is part of Unity's input system setup.
 
 ```c#
-[System.Serializable]
-private class MySerializationWrapper
-{
-    public List<StatData> MasterStatDataList;
-}
+public class PlayerInputReader : MonoBehaviour, PlayerControls.IPlayerActions{}
 ```
 
 <br>
 <br>
 
-This is how you create a ScriptableObject asset reference field from a custom type **(PlayerStats)** in an editor GUI. This creates the drag and drop fields in the utility’s UI. **SerializedObject** is how you can work with ScriptableObjects in the editor.
+When the user hits a button on the keyboard or gamepad, that action is interpreted by the PlayerControls class and relayed to the PlayerInputReader class via the events defined in “IPlayerAction”. The PlayerInputReader class receives the notification and triggers the state machine to respond with the corresponding state behavior.
+
 ```c#
-/*This code block is various snippets from the Stats2JSON.cs class*/
-//...
-
-[SerializeField] private PlayerStats playerStatsSO;
-private SerializedObject serializedObject;
-
-//...
-
-private void OnEnable()
+void PlayerControls.IPlayerActions.OnAttack(InputAction.CallbackContext context)
 {
-    serializedObject = new SerializedObject(this);
+    Log("InputAction \"Attack\" performed");
+
+    if (context.performed) { IsAttacking = true; Log("Attack InputAction performed - InputSystemReader"); }
+    else if (context.canceled) { IsAttacking = false; Log("Attack InputAction canceled - InputSystemReader"); }
 }
 
-//...
-
-serializedObject.Update();
-
-//...
-
-SerializedProperty playerDataSO = serializedObject.FindProperty("playerStatsSO"); 
-EditorGUILayout.PropertyField(playerDataSO, true);
-serializedObject.ApplyModifiedProperties();
 ```
 
 <br>
 <br>
 
-Here I take the ScriptableObject data and put it inside the serializable wrapper class container with **JsonUtility.ToJson()**. Then I use **File.WriteAllText()** to write the data to the disk. 
+I use Properties extensively here, allowing specific states to monitor changes in response to user input. Since input can be rapid and unpredictable, properties let you interrupt state behaviors to keep controls responsive.
 ```c#	
-string json = JsonUtility.ToJson(new MySerializationWrapper { MasterStatDataList = StatsSODataStructList }, true);
-File.WriteAllText(pathToSaveFile, json);
+public bool IsCrouching { get; private set; }
+public Vector2 MovementValueL { get; private set; }
 ```
 
 <br>
 <br>
 
-I use reflection here to check the stat properties in each dictionary to see which subclass **(generalProperties or combatProperties)** the stat belongs to with **(typeGeneralProperties.GetProperty(entry.Key) != null)**. Then I call the internal function in the subclasses called **“InjectStatData…()”** and inject the stat data back into the ScriptableObject for assignment.
-```c#
-Type typeGeneralProperties = playerStatsSO.generalProperties.GetType();
-Type typeCombatProperties = playerStatsSO.combatProperties.GetType();
+Notice that some of the properties are bools and others are vectors. These types correspond to Unity's input action types. For example, joystick input returns an x & y vector, so it's mapped to a Vector2 property. Buttons, on the other hand, are mapped to bools for on/off conditions.
 
-foreach (KeyValuePair<string, int> entry in dictionaryInt)
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## BREAKDOWN - StateMachine.cs
+This class is the heart of the system. It's an abstract class, meaning it is meant to be inherited from and not used directly. It also inherits from MonoBehaviour to tap into Unity’s lifecycle methods (Awake, Start(), Update(), etc.).
+
+```c#
+public abstract class StateMachine : MonoBehaviour {}
+```
+
+<br>
+<br>
+
+I define a “State” field that allows me to initialize a new state and pass it into the state machine. Inside the Update() method, I call the active state’s Tick() method to execute per-frame logic, if necessary. And finally, I define a SwitchState() method which takes in an instance of a state. This method transitions between states, calling Exit() on the current state and Enter() on the new one.
+
+```c#	
+public void SwitchState(State newState)
 {
-    if (typeGeneralProperties.GetProperty(entry.Key) != null)
-    {
-        playerStatsSO.generalProperties.InjectStatDataInt(entry.Key, entry.Value, 0f);
-    }
-    else if (typeCombatProperties.GetProperty(entry.Key) != null)
-    {
-        playerStatsSO.combatProperties.InjectStatDataInt(entry.Key, entry.Value, 0f);
-    }
+    currentState?.Exit();
+    currentState = newState;
+    currentState?.Enter();
 }
-```
-
-<br>
-<br>
-
-**SetDirty()** tells the Unity editor that these assets have been modified so that the changes will be saved the next time the active scene is saved. Failing to do this could result in the data being lost when loading a new scene or restarting the editor for example.
-```c#
-EditorUtility.SetDirty(playerStatsSO);
-EditorUtility.SetDirty(enemyStatsSO);
 ```
 
 ## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## BREAKDOWN - PlayerStats.cs
-This is the **InjectStatData()** called by the editor utility. It also uses reflection to check the incoming stat properties against its own properties to find matches with **type.GetProperty(nameOfPropertyInThisClass,...)**. Once the matching property is found, the value is assigned. I also check the property's type to correctly sort the integer stat values from the floats with the if/ else condition.
-```c#
-public void InjectStatData(string nameOfPropertyInThisClass, int valueInt, float valueFloat)
+## BREAKDOWN - State.cs
+The State class defines the structure of each state, which includes an Enter(), Tick(), and Exit() method. Enter() is called as soon as the state begins executing, Tick() runs every frame, and Exit() triggers when the state completes or is interrupted. Like the StateMachine class, this is also abstract, intended for other states to inherit from.
+
+```c#	
+public abstract class State{}
+```
+
+```c#	
+public abstract void Enter();
+public abstract void Tick(float deltaTime);
+public abstract void Exit();
+```
+
+<br>
+<br>
+
+I mentioned earlier that inheritance can be used to share logic between states. The “GetNormalizedTime()” function an example of that. Defining that function here allows any state to reuse this logic. I mark the function as protected so the child classes can access it.
+
+```c#	
+protected float GetNormalizedTime(Animator animator){}
+```
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## BREAKDOWN - PlayerStateMachine.cs
+The first thing to note here is this class inherits from the abstract “StateMachine” class we defined earlier. It contains the specific implementation logic. It defines various fields to manage things like communication with external components and controls to fine-tune state machine behavior.
+
+```c#	
+public class PlayerStateMachine : StateMachine {}
+```
+
+```c#	
+[field: SerializeField] public PlayerInputReader PlayerInputReader { get; private set; }
+[field: SerializeField] public float CrouchMovementSpeed { get; private set; }
+```
+
+<br>
+<br>
+
+On Start() I make sure to initiate the very first state I want the character to enter when the game starts.
+
+```c#	
+private void Start() { SwitchState(new PlayerFreeMoveState(this)); }
+```
+
+## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+## BREAKDOWN - PlayerAttackingState.cs
+Each state has their own unique setup so for the sake of brevity let's look at PlayerAttackingState to outline the core functionality of all the states. First, notice this class inherits from “PlayerBaseState” which is yet another abstract class that contains some shared logic specific to the player. Recall I mentioned state machines can be used by non-player objects as well. That is the reason for the additional branching here. The inheritance goes as follows: State.cs > PlayerBaseState > PlayerAttackingState.
+
+<img src="./stateMachineScreen01.jpg" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
+
+```c#	
+public class PlayerAttackingState : PlayerBaseState {}
+```
+
+<br>
+<br>
+
+The constructor takes in the PlayerStateMachine instance and an attackIndex. The base constructor from PlayerBaseState is then called to initialize the attack. The attack index assigns the correct attack from the stored list of attacks in the state machine.
+
+```c#	
+public PlayerAttackingState(PlayerStateMachine stateMachine, int attackIndex) : base(stateMachine) 
 {
-    Type type = this.GetType();
-
-    PropertyInfo property = type.GetProperty(nameOfPropertyInThisClass, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
-
-    if (property != null && property.PropertyType == typeof(Int32))
-    {
-        if (property.CanWrite)
-        {
-            property.SetValue(this, valueInt);
-        }
-    }
-    else if (property != null && property.PropertyType == typeof(Single))
-    {
-        if (property.CanWrite)
-        {
-            property.SetValue(this, valueFloat);
-        }
-    }
+    attack = stateMachine.Attacks[attackIndex];
 }
 ```
 
 <br>
 <br>
+
+Here is an example of the “PlayerFreeMoveState” using the above constructor to initiate a new attack when the player hits the left mouse button/ west gamepad button. The “IsAttacking” bool is one of those monitoring properties I spoke about earlier in the "PlayerInputReader" section.
+
+```c#	
+if (stateMachine.PlayerInputReader.IsAttacking)
+{
+    stateMachine.SwitchState(new PlayerAttackingState(stateMachine, 0));
+    return;
+}
+```
+
+<br>
+<br>
+
+The Enter() method here does a few things. Notably the ReportActiveState(“Attacking”) function is what updates the “Active State:” readout in the game UI that lets you monitor what the state machine is doing at any given moment.
+
+```c#	
+stateMachine.ReportActiveState("Attacking");
+```
+
+<img src="./stateMachineScreen02.jpg" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
+
+<br>
+<br>
+
+Then I call the correct attack animation from the animator component and transition into it.
+
+```c#	
+stateMachine.Animator.CrossFadeInFixedTime(attack.AnimationName, attack.TransitionDuration);
+```
+
+<br>
+<br>
+
+Inside Tick(), it checks the attack animation’s playback. If the animation completes and IsAttacking is true, it chains another attack to create a combo. If IsAttacking is false, it returns to PlayerFreeMoveState.
+
+```c#	
+if(normalizedTime < 1f)
+{
+    if (stateMachine.PlayerInputReader.IsAttacking) { ChainAttack(normalizedTime); }
+}
+else { stateMachine.SwitchState(new PlayerFreeMoveState(stateMachine)); }
+```
 
 [>> BACK TO HOME PAGE <<](./README.md)
