@@ -125,7 +125,7 @@ private void Start() { SwitchState(new PlayerFreeMoveState(this)); }
 ## BREAKDOWN - PlayerAttackingState.cs
 Each state has their own unique setup so for the sake of brevity let's look at PlayerAttackingState to outline the core functionality of all the states. First, notice this class inherits from “PlayerBaseState” which is yet another abstract class that contains some shared logic specific to the player. Recall I mentioned state machines can be used by non-player objects as well. That is the reason for the additional branching here. The inheritance goes as follows: State.cs > PlayerBaseState > PlayerAttackingState.
 
-<img src="./stateMachineScreen01.jpg" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
+<img src="./stateMachineScreen01.JPG" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
 
 ```c#	
 public class PlayerAttackingState : PlayerBaseState {}
@@ -165,7 +165,7 @@ The Enter() method here does a few things. Notably the ReportActiveState(“Atta
 stateMachine.ReportActiveState("Attacking");
 ```
 
-<img src="./stateMachineScreen02.jpg" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
+<img src="./stateMachineScreen02.JPG" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
 
 <br>
 <br>
