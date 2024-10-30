@@ -161,7 +161,7 @@ if (stateMachine.PlayerInputReader.IsAttacking)
 <br>
 <br>
 
-The Enter() method here does a few things. Notably the **"ReportActiveState(“Attacking”)"** function is what updates the **Active State:* readout in the game's UI. With this you can monitor what the state machine is doing at any given moment.
+The **"Enter()"** method here does a few things. Notably the **"ReportActiveState(“Attacking”)"** function is what updates the **Active State:** readout in the game's UI. With this you can monitor what the state machine is doing at any given moment.
 
 ```c#	
 stateMachine.ReportActiveState("Attacking");
