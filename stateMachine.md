@@ -6,7 +6,7 @@ State Machines, or Finite State Machines (FSMs) as they are sometimes referred t
 
 One of the best features of state machines is their modular architecture. Each set of behaviors, or 'state,' is self-contained and independent, making modifications and extension pretty straightforward. Another strength is that shared functionality can be encapsulated in parent classes, allowing child classes to inherit that shared functionality. This reduces copy-paste redundancy and improves overall scalability.
 
-To see the state machine in action and access the full code, click the link at the top right to visit my GitHub and download **StateMachineBuild.zip** and **StateMachineClassFiles.zip**.
+To access the full code, click the link at the top right to visit my GitHub and download **StateMachineClassFiles.zip**. To see the state machine in action, download <a href="https://drive.google.com/file/d/1w3aI2tAFVoqU8KEXl0H3HmHNFj8uhSZE/view?usp=drive_link" target="_blank">**StateMachineBuild.zip**</a> from my Google Drive.
 
 <a href="https://theblueturtle.github.io/github-portfolio/StateMachine.gif" target="_blank">
   <img src="./StateMachine.gif" alt="State Machine: Dynamic Game Object Behavior System - Leonardo Carrion Jr" style="width: 100%;">
