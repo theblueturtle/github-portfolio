@@ -6,7 +6,7 @@ Web scraping is an incredibly useful skill to have in your coding toolkit. The a
 
 For this project, I developed a D&D (5th Edition) web scraper for monsters using WinForms, .NET 8.0, and C#. True to my nerdy roots, this web scraper pulls data from the Official 5th Edition SRD using a RESTful API.
 
-If you'd like to check out the project in action, download a copy of the <a href="https://drive.google.com/file/d/1XxE1e7nI0UD_msOr_Lu4457UA34lZhMU/view?usp=sharing" target="_blank">**D&D5thEdition_WebScraper.zip**</a> from my Google Drive.
+If you'd like to check out the project in action, download a copy of the <a href="https://drive.google.com/file/d/1XxE1e7nI0UD_msOr_Lu4457UA34lZhMU/view?usp=sharing" target="_blank">**D&D5thEdition_WebScraper.zip**</a> from my Google Drive. To access the code described below, click the link at the top right of the banner to visit my GitHub and download the **DnD5thEditionWebScraperClassFiles.zip** file.
 
 <a href="https://theblueturtle.github.io/github-portfolio/DnDWebScraper.gif" target="_blank">
   <img src="./DnDWebScraper.gif" alt="Web Scraper: RESTful API Data Retrieval - Leonardo Carrion Jr" style="width: 100%;">
