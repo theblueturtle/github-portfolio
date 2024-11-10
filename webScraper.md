@@ -30,6 +30,12 @@ The main function, **"buttonExecuteScrape_Click"**, is tied to the **"Search"** 
 
 ```c#
 private async void buttonExecuteScrape_Click(object sender, EventArgs e) {}
+
+var progress = new Progress<int>(value =>
+            {
+                progressBarScraper.Value = value;
+            });
+
 string result = await dndAPILogicComponent.ExecuteScrape(progress, userInputValidated, userInputRaw);
 ```
 
